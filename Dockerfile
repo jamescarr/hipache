@@ -17,12 +17,16 @@ run	apt-get -y install wget git redis-server supervisor
 run	wget -O - http://nodejs.org/dist/v0.8.23/node-v0.8.23-linux-x64.tar.gz | tar -C /usr/local/ --strip-components=1 -zxv
 run	npm install hipache -g
 run	mkdir -p /var/log/supervisor
-add ./run_supervisord.sh /usr/local/bin/run_supervisord.sh
+run	mkdir -p /var/log/nginx
+
 add	./config/config_dev.json /usr/local/lib/node_modules/hipache/config/config_dev.json
 add	./config/config_test.json /usr/local/lib/node_modules/hipache/config/config_test.json
 add	./config/config.json /usr/local/lib/node_modules/hipache/config/config.json
+add ./redis.conf /etc/redis/redis.conf
+
 expose	80
 expose	6379
 
-env SETTINGS_FLAVOR dev
-cmd	["/usr/local/bin/run_supervisord.sh"]
+env SETTINGS_FLAVOR prod
+
+cmd	["supervisord", "-n"]
